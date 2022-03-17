@@ -193,7 +193,7 @@ router.post(
       console.log('Dwolla customer funding source  url:', fundingSourceUrl);
     }else{
       console.log("no processor token yet")
-    }ß
+    }
 
     // if not isProcessor, processorToken, customerUrl and fundingSouceUrl will all be null
     const newAccount = await createAccount(

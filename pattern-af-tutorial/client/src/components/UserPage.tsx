@@ -59,7 +59,7 @@ const UserPage = ({ match }: RouteComponentProps<RouteInfo>) => {
   }, []);
 
   const getBalance = useCallback(async () => {
-    // ADD CODE FOR CHECKPOINT 6 ON THIS LINE
+    // ADD CODE FOR CHECKPOINT 5 ON THIS LINE
     console.log('no new balance information yet');
   }, [account, item]);
 
@@ -72,7 +72,7 @@ const UserPage = ({ match }: RouteComponentProps<RouteInfo>) => {
   const checkFullName = useCallback(
     // ownerNames is the ownernames array returned from identity/get
     (ownerNames: string[], fullname: string | null) => {
-      // ADD CODE FOR CHECKPOINT 5a ON THIS LINE AND DELETE BOTH THE CONSOLE LOG AND THE RETURN FALSE LINES BELOW
+      // ADD CODE FOR CHECKPOINT 4a ON THIS LINE AND DELETE BOTH THE CONSOLE LOG AND THE RETURN FALSE LINES BELOW
       console.log('no name check yet'); // DELETE THIS LINE
       return false; // DELETE THIS LINE
     },
@@ -80,7 +80,7 @@ const UserPage = ({ match }: RouteComponentProps<RouteInfo>) => {
   );
 
   const checkUserEmail = useCallback((emails: string[], user_email: string) => {
-    // ADD CODE FOR CHECKPOINT 5b ON THIS LINE AND DELETE BOTH THE CONSOLE LOG AND THE RETURN FALSE LINES BELOW
+    // ADD CODE FOR CHECKPOINT 4b ON THIS LINE AND DELETE BOTH THE CONSOLE LOG AND THE RETURN FALSE LINES BELOW
     console.log('no email check yet'); // DELETE THIS LINE
     return false; // DELETE THIS LINE
   }, []);

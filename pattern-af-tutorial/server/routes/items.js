@@ -325,22 +325,7 @@ router.put(
   })
 );
 
-
-/**
- * Updates balances on account
- *
- * @param {number} itemId the ID of the item.
- * @param {string} accountId the account id.
- * @returns {Object[]} an array containing a single account.
- */
- router.put(
-  '/:itemId/balance',
-  asyncWrapper(async (req, res) => {
-    // ADD CODE FOR CHECKPOINT 4 ON THIS LINE
-  })
-);
-
-
+    // ADD CODE FOR CHECKPOINT 6 ON THIS LINE
 
 /**
  * Deletes a single item and related accounts and transactions.

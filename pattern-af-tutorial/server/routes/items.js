@@ -173,9 +173,11 @@ router.post(
 
     if (isIdentity && emails != null && ownerNames != null) {
       console.log('Checkpoint #2 done!');
-      console.log('onwer:', firstName, lastName);
+      console.log('owner:', firstName, lastName);
       console.log('email:', emails[0]);
       console.log('balances:', balances);
+    }else{
+      console.log("no identity check yet")
     }
     // processorToken is only set if IS_PROCESSOR is true in .env file
     let processorToken = null;
@@ -189,7 +191,9 @@ router.post(
       console.log('processorToken:', processorToken);
       console.log('Dwolla customer url:', customerUrl);
       console.log('Dwolla customer funding source  url:', fundingSourceUrl);
-    }
+    }else{
+      console.log("no processor token yet")
+    }ß
 
     // if not isProcessor, processorToken, customerUrl and fundingSouceUrl will all be null
     const newAccount = await createAccount(

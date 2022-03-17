@@ -56,7 +56,8 @@ const Transfers: React.FC<Props> = (props: Props) => {
     funding_source_url: string,
     itemId: number
   ) => {
-    // ADD CODE FOR CHECKPOINT 9 ON THIS LINE
+    // ADD CODE FOR CHECKPOINT 9 ON THIS LINE AND DELETE THE CONSOLE LOG BELOW
+    console.log("can't transfer to Dwolla yet"); // DELETE THIS LINE
   };
 
   const completeAchTransfer = (amount: number, accountId: string) => {
@@ -70,7 +71,8 @@ const Transfers: React.FC<Props> = (props: Props) => {
   };
 
   const checkAmountAndInitiate = async (amount: number) => {
-    // ADD CODE FOR CHECKPOINT 8 ON THIS LINE
+    // ADD CODE FOR CHECKPOINT 8 ON THIS LINE AND DELETE THE CONSOLE LOG BELOW
+    console.log('cannot check the amount yet'); // DELETE THIS LINE
   };
 
   return (

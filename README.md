@@ -22,7 +22,7 @@
 
 Transferring funds from a bank account into an app (i.e., "account funding") is a common use case when building with Plaid. In this tutorial, we'll demonstrate how to implement account funding in the Plaid Pattern sample app.
 
-Account funding is commonly implemented using a combination of Plaid products and a Plaid partner (i.e., Stripe, Dwolla, etc.). In this tutorial, we'll use Plaid Auth, Balance, Identity ("ABI"), and Dwolla to build account funding into the Pattern sample app. We'll retrieve account information through a combination of Auth and Dwolla, use Balance to check the balance of an account, and use Identity to verify the identity of users initiating a transfer. Dwolla will be used to move (fictional) funds from a bank account into the Plaid Pattern sample app. For a full list of supported partners, see [Auth Payment Partners](https://plaid.com/docs/auth/partnerships/).
+Account funding is commonly implemented using a combination of Plaid products and a Plaid partner (i.e., Stripe, Dwolla, etc.). In this tutorial, we'll use Plaid Auth, Balance, Identity ("ABI"), and Dwolla to build account funding into the Pattern sample app. We'll retrieve account information through a combination of Auth and Dwolla, use Balance to check the balance of an account, and use Identity to verify the identity of users initiating a transfer. Dwolla will be used to move (fictional) funds from a user's bank account into the Plaid Pattern sample app. For a full list of supported partners, see [Auth Payment Partners](https://plaid.com/docs/auth/partnerships/).
 
 For a preview of what you'll be building toward, navigate to the <a href="https://github.com/plaid/pattern-account-funding" target="_blank">Plaid Pattern sample app</a> and follow the instructions in the README to launch the app. Once the app is up and running, create a user, enable "Verify Identity Mode", and proceed to link a bank account. Finally, click the "Transfer funds" button to transfer funds into the Pattern app.
 
@@ -54,15 +54,28 @@ Inside of **pattern-af-tutorial/**, you'll find the skeleton codebase for this t
 cd pattern-af-tutorial/ && cd client/ && npm install
 ```
 
-#### Enabling Dwolla
+#### Enable the Plaid API
 
-**IMPORTANT** Navigate to the <a href="https://dashboard.plaid.com/team/integrations" target="_blank">Integrations section of your Plaid Dashboard</a> and enable Dwolla. This will ensure we can use Dwolla as a partner for the funds transfer. The app won't function properly if this integration isn't enabled. In addition, if you don't have a Plaid account, you'll need to create one so that you can enable the integration.
+First, create a **.env** file in the **pattern-af-tutorial/** directory. Copy the contents of the **.env.template** file into **.env**. 
+
+Next, navigate to the <a href="https://dashboard.plaid.com/team/keys" target="_blank">Keys section of your Plaid Dashboard</a>. Set the following variables in your **.env** file using the client ID and secrets in your Dashboard:
+
+```bash
+PLAID_CLIENT_ID=
+PLAID_SECRET_SANDBOX=
+```
+
+When setting `PLAID_SECRET_SANDBOX`, use the value of the "Sandbox" secret in your Plaid Dashboard. Don't use quotes (`"`) around any of the values (i.e., `PLAID_CLIENT_ID=adn08a280hqdaj0ad`, not `PLAID_CLIENT_ID="adn08a280hqdaj0ad"`).
+
+#### Enable Dwolla
+
+Navigate to the <a href="https://dashboard.plaid.com/team/integrations" target="_blank">Integrations section of your Plaid Dashboard</a> and enable Dwolla. This will ensure we can use Dwolla as a partner for the funds transfer. The app won't function properly if this integration isn't enabled.
 
 To use the Dwolla API, <a href="https://accounts-sandbox.dwolla.com/sign-up" target="_blank">create a sandbox account with Dwolla</a>.
 
 After creating an account, we'll need to equip the skeleton codebase with the proper Dwolla API credentials. This will ensure we can actually make funds transfers using Dwolla. 
 
-First, create a **.env** file in the **pattern-af-tutorial/** directory. Copy the contents of the **.env.template** file into **.env**. Set the following variables:
+In your **.env** file, set the following variables:
 
 ```bash
 IS_PROCESSOR=true
@@ -220,7 +233,7 @@ if (!isProcessor) {
 
 We're using a processor to transfer funds, so the code in the `else` block will execute. In the `else` block, we generate a processor token using Plaid's **/processor/token/create** endpoint. We also create a Dwolla Customer and obtain the corresponding Customer URL, which is necessary to create a Customer funding source. The funding source represents where a user's funds originate from when they transfer funds into the Pattern app.
 
-Note that this bit of code won't function properly if you didn't enable the Dwolla integration in the Plaid dashboard [as described earlier in the tutorial setup](#enabling-dwolla).
+Note that this bit of code won't function properly if you didn't enable the Dwolla integration in the Plaid dashboard [as described earlier in the tutorial setup](#enable-dwolla).
 
 The `createDwollaCustomer()` and `createDwollaCustomerFundingSource()` functions represent Dwolla-specific code needed to make transfers later. If you're interested in the details, refer to their implementations in **server/routes/items.js**.
 

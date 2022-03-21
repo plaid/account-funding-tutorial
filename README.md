@@ -243,7 +243,7 @@ Let's briefly move to the front end and add functionality that will help verify 
 
 When a user successfully creates an account in the app, they're redirected to their user page. This page is defined in **client/src/components/UserPage.tsx**. The page contains the user's name and email that was input when the account was created. We'll parse this information, save it, and later use it to verify the user's identity.
 
-Inside of the `checkFullName()` on line 72, add the following:
+Inside of the `checkFullName()` function on line 72, add the following:
 
 ```js
 if (fullname != null) {
@@ -428,7 +428,7 @@ if (amount <= balance && amount > 0) {
 
 The `checkAmountAndInitiate()` function will attempt to transfer funds if the amount specified doesn't exceed the balance in the account and if the transfer amount is more than $0.00. Because we're using Dwolla, the funds will be transferred according to the logic in the `sendRequestToProcessor()` function (i.e., `IS_PROCESSOR` is true). Finally, the app is updated to reflect the newly available funds, and the number of successful transfers for this account is incremented by 1 (ensuring that **/accounts/balance/get** is called on subsequent transfers to return real-time balance information).
 
-In the next (and final!) checkpoint, we'll add the `sendRequestToProcessor()` function used in `checkAmountAndInitiate()`;
+In the next (and final!) checkpoint, we'll add the `sendRequestToProcessor()` function used in `checkAmountAndInitiate()`.
 
 ### Checkpoint 9: Sending the transfer request to Dwolla
 
@@ -451,9 +451,9 @@ try {
 }
 ```
 
-`sendRequestToProcessor()` calls Dwolla's **/transfers/** endpoint to make the transfer. Under the hood, this function makes a call to `makeTransfer()` (defined in **client/src/services/api.js**), which hits the route for creating transfers with Dwolla (LINE XX in **server/routes/items.js**).
+`sendRequestToProcessor()` calls Dwolla's **/transfers/** endpoint to make the transfer. Under the hood, this function makes a call to `makeTransfer()` (defined in **client/src/services/api.js**), which hits the route for creating transfers with Dwolla (defined in **server/routes/items.js**).
 
-The request payload includes `funding_source_url`, which is specific to this particular customer account. `funding_source_url` was originally returned by the Dwolla API and saved in a database when the processor token was passed to Dwolla (see the code on LINE XX in **server/routes/items.js**).
+The request payload includes `funding_source_url`, which is specific to this particular customer account. `funding_source_url` was originally returned by the Dwolla API and saved in a database when the processor token was passed to Dwolla (also defined in **server/routes/items.js**).
 
 ### Let's try it all out!
 

@@ -82,6 +82,8 @@ Be sure to save your changes!
 
 To start the app, run `make start` in the **pattern-af-tutorial/** directory. The app will run on localhost:3002. The app will continue to run as you progress through the tutorial.
 
+Some code snippets contain `console.log()` statements that print out information related to the code in the snippet. They also print out success messages intended to help guide you as you progress through the checkpoints. For front end code, check the console in your browser to view the output of the `console.log()` statement. For back end code, run `make logs` in your terminal to view the output of the statement.
+
 If you encounter issues when running the `make start` command, first ensure that Docker is running. If Docker is running and you're still encountering issues, try running `docker compose build server`. If you're still encountering issues after that, [file an Issue in this repo](https://github.com/plaid/account-funding-tutorial/issues).
 
 ### Let's start building
@@ -154,9 +156,9 @@ The `generateLinkToken()` function generates a Link token. Under the hood, this 
 
 At this point, you might be thinking: but where is Link actually initialized?
 
-Navigate to **client/src/components/LinkButton.tsx**. This file defines the `LinkButton` component used in the UI. When clicked in the app, it'll initialize Link with a Link token (along with the configurations we specified for the token) and open Link. When a user successfully links their bank account, you'll receive an access token. The access token is what enables you to make API calls related to the linked bank account. 
+Navigate to **client/src/components/LinkButton.tsx**. This file defines the `LinkButton` component used in the UI. When clicked in the app, it'll initialize Link with a Link token (along with the configurations we specified for the token) and open Link. When a user successfully links their bank account, you'll receive a public token via Link's `onSuccess()` callback function. The public token can then be exchanged for an access token, which can be used to make API calls to the linked bank account. For more details on the token exchange flow and Link, see [the official Plaid Link documentation](https://plaid.com/docs/link/).
 
-That just about covers the Link implementation in the Pattern app! For more details on the token exchange flow and Link, see [the official Plaid Link documentation](https://plaid.com/docs/link/). Let's move on to adding some more functionality.
+That just about covers the Link implementation in the Pattern app! Let's move on to adding some more functionality.
 
 ### Checkpoint 2: Retrieve identity and initial balance information associated with the account
 
@@ -182,9 +184,9 @@ if (isIdentity) {
 
 The `isIdentity` boolean in the code above represents whether the "Verify Identity Mode" checkbox was checked during account creation in the app. For the purposes of this tutorial, we'll assume it was checked, which sets `isIdentity` to true and executes the **/identity/get** call in the `if` block. From the response, we extract the owner names and emails associated with the account and store this information to verify user identity later.
 
-The **isProcessor** boolean in the nested `if` statement represents whether a processor is being used to transfer funds. We're using Dwolla to transfer funds, so the code in the nested `if` block will execute. In this block, we retrieve the initial account balance from the **/identity/get** response.
+The `isProcessor` boolean in the nested `if` statement represents whether a processor is being used to transfer funds. We're using Dwolla to transfer funds, so the code in the nested `if` block will execute. In this block, we retrieve the initial account balance from the **/identity/get** response.
 
-Note that we didn't call **/accounts/balance/get** to retrieve initial balance information. Why? Well, many Plaid products other than Balance (like Identity) return balance information. However, this data is typically updated about once a day and cached data is often returned. This balance information is sufficient for establishing an initial balance. For subsequent balance checks, we'll call **/accounts/balance/get** to retrieve real-time balance. We'll provide more detail in a different checkpoint of the tutorial.
+Note that we didn't call **/accounts/balance/get** to retrieve initial balance information. Why? Well, many Plaid products other than Balance (like Identity) return balance information. However, this data is typically updated about once a day and cached data is often returned. This balance information is sufficient for establishing an initial balance, but insufficient for real-time balance checks. On subsequent balance checks, we'll call **/accounts/balance/get** to retrieve the real-time balance. We'll provide more detail in a different checkpoint of the tutorial.
 
 ### Checkpoint 3: Generating a partner processor token
 
@@ -291,11 +293,11 @@ if (
 }
 ```
 
-The `getBalance()` function retrieves the real-time balance of an account by calling **/accounts/balance/get**. The logic ensures that we retrieve real-time balance only all transfers initiated after the initial transfer (recall that for the initial transfer we use the balance information from **/identity/get**), or if more than one hour has elapsed since the last balance check (to make sure balance data is fresh, and not cached).
-
-Typically, it's good practice to call **/accounts/get/balance** only if calls to other endpoints that return balance information are older than an hour. For the purposes of this tutorial, we assume that the balance returned by **/identity/get** is the first ever balance check for that Item.
+The `getBalance()` function retrieves the real-time balance of an account by calling **/accounts/balance/get**. The logic ensures that we retrieve real-time balance only on transfers initiated after the initial transfer (recall that for the initial transfer we use the balance information from **/identity/get**), or if more than one hour has elapsed since the last transfer (i.e., the last balance check).
 
 So, when is this function used? We'll call this function when a user clicks the "Transfer Funds" button in the UI. Under the hood, this function makes a call to `getBalanceByItem()` (defined in **client/src/services/api.js**), which hits a route that we'll define in the next checkpoint.
+
+It's important to note that **/accounts/balance/get** is the only Plaid endpoint that returns real-time balance information. Although there are other Plaid endpoints that return balance information (i.e., **/identity/get**), you should avoid using the balance information they return if it's been less than 24 hours since the most recent call to that endpoint. This is because this balance data is typically updated about once a day, and cached data is often returned. For the most up-to-date balance information, always use **/accounts/balance/get**.
 
 ### Checkpoint 6: Retrieving real-time balance information
 
@@ -372,7 +374,7 @@ Let's recap what we've added so far:
   * We added functionality that generates a processor token so that we can use the Dwolla API for money movement
   * We added functionality that gets real-time balance information 
 * In the front end:
- * We added two functions that parse and return a user's legal name and email address (to help verify identity)
+  * We added two functions that parse and return a user's legal name and email address (to help verify identity)
   * We added a function that retrieves the current balance of an account (to prevent transfers that exceed the balance of the origination account)
 
 With this functionality in place, we're ready to add the functionality to transfer funds with Dwolla. 

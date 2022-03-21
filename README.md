@@ -417,7 +417,7 @@ In the next (and final!) checkpoint, we'll add the `sendRequestToProcessor()` fu
 
 ### Checkpoint 9: Sending the transfer request to Dwolla
 
-Let's add the functionality that sends the transfer request to Dwolla. Replace lines 59-60 in the `sendRequestToProcessor()` function, with the following:
+Let's add the functionality that sends the transfer request to Dwolla. Replace lines 59-60 in the `sendRequestToProcessor()` function with the following:
 
 ```js
 try {

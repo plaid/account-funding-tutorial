@@ -30,7 +30,7 @@ For a preview of what you'll be building toward, navigate to the <a href="https:
 
 In this tutorial, you'll start with a "skeleton" version of the codebase for the Plaid Pattern sample app. Everything except the account funding functionality will exist in the skeleton codebase. You'll build account funding as you progress through the tutorial. We'll provide the code snippets needed to build this functionality, as well as an explanation of what each code snippet does.
 
-Finally, if you've progressed through the tutorial and would like to leave feedback, see the following: [Your feedback on this tutorial](https://github.com/plaid/account-funding-tutorial/issues/7). We'll be sure to take a look and do our best to help.
+Finally, if you've progressed through the tutorial and would like to leave feedback, see [Feedback: Account Funding Tutorial](https://github.com/plaid/account-funding-tutorial/issues/7). We'll be sure to take a look and do our best to help.
 
 ### Setting Up
 
@@ -137,7 +137,7 @@ const linkTokenParams = {
 };
  ```
 
-The `linkTokenParams` object represents the parameters we'll use to generate a Link token. The `products` variable refers to the array of products we're initializing Link with (defined on line 29 of this file). Note that the `products` array initially contains only `'auth'`, but the logic on line 30 ensures we also initialize with `'identity'`. This rationale behind this logic will be explained in a later section of the tutorial.
+The `linkTokenParams` object represents the parameters we'll use to generate a Link token. The `products` variable refers to the array of products we're initializing Link with (defined on line 29 of this file). Note that the `products` array initially contains only `'auth'`, but the logic on line 30 ensures we also initialize with `'identity'`. This is because using Identity is optional in the app.
 
 Now let's move to the front end. Navigate to **client/src/services/link.tsx**. Take a look at the code that starts on line 63:
 
@@ -165,11 +165,11 @@ const generateLinkToken = useCallback(async (userId, itemId, isIdentity) => {
   }, []);
 ```
 
-The `generateLinkToken()` function generates a Link token. Under the hood, this function makes a call to `getLinkToken()` (defined in **client/src/services/api.js**), which hits the route for Link token creation in **server/routes/linkTokens.js**.
+The `generateLinkToken()` function generates a Link token. Under the hood, this function makes a call to `getLinkToken()` (defined in **[client/src/services/api.js](https://github.com/plaid/account-funding-tutorial/blob/main/pattern-af-tutorial/client/src/services/api.tsx#L64)**), which hits the route for Link token creation in **[server/routes/linkTokens.js](https://github.com/plaid/account-funding-tutorial/blob/main/pattern-af-tutorial/server/routes/linkTokens.js#L23)**.
 
 At this point, you might be thinking: but where is Link actually initialized?
 
-Navigate to **client/src/components/LinkButton.tsx**. This file defines the `LinkButton` component used in the UI. When clicked in the app, it'll initialize Link with a Link token (along with the configurations we specified for the token) and open Link. When a user successfully links their bank account, you'll receive a public token via Link's `onSuccess()` callback function. The public token can then be exchanged for an access token, which can be used to make API calls to the linked bank account. For more details on the token exchange flow and Link, see [the official Plaid Link documentation](https://plaid.com/docs/link/).
+Navigate to **client/src/components/LinkButton.tsx**. This file defines the `LinkButton` component used in the UI. When clicked in the app, it'll initialize Link with a Link token (along with the configurations we specified for the token) and open Link. When a user successfully links their bank account, you'll receive a public token via Link's `onSuccess()` callback function. The public token can then be [exchanged for an access token](https://github.com/plaid/account-funding-tutorial/blob/main/pattern-af-tutorial/server/routes/items.js#L115), which can be used to make API calls to the linked bank account. For more details on the token exchange flow and Link, see [the official Plaid Link documentation](https://plaid.com/docs/link/).
 
 That just about covers the Link implementation in the Pattern app! Let's move on to adding some more functionality.
 
@@ -199,7 +199,7 @@ The `isIdentity` boolean in the code above represents whether the "Verify Identi
 
 The `isProcessor` boolean in the nested `if` statement represents whether a processor is being used to transfer funds. We're using Dwolla to transfer funds, so the code in the nested `if` block will execute. In this block, we retrieve the initial account balance from the **/identity/get** response.
 
-Note that we didn't call **/accounts/balance/get** to retrieve initial balance information. Why? Well, many Plaid products other than Balance (like Identity) return balance information. However, this data is typically updated about once a day and cached data is often returned. This balance information is sufficient for establishing an initial balance, but insufficient for real-time balance checks. On subsequent balance checks, we'll call **/accounts/balance/get** to retrieve the real-time balance. We'll provide more detail in a different checkpoint of the tutorial.
+Note that we didn't call **/accounts/balance/get** to retrieve initial balance information. This is because there are several Plaid products other than Balance (like Identity) that return balance information suitable for establishing an initial balance.  However, this data is typically updated about once a day and cached data is often returned, making it insufficient for real-time balance checks. In addition, **/accounts/balance/get** is billed on a per-request basis, so it's best (i.e., cost effective) to call it only when absolutely necessary. For subsequent balance checks in the app, we'll call **/accounts/balance/get** to retrieve the real-time balance. We'll provide more detail in a different checkpoint of the tutorial.
 
 ### Checkpoint 3: Generating a partner processor token
 
@@ -235,7 +235,7 @@ We're using a processor to transfer funds, so the code in the `else` block will 
 
 Note that this bit of code won't function properly if you didn't enable the Dwolla integration in the Plaid dashboard [as described earlier in the tutorial setup](#enable-dwolla).
 
-The `createDwollaCustomer()` and `createDwollaCustomerFundingSource()` functions represent Dwolla-specific code needed to make transfers later. If you're interested in the details, refer to their implementations in **server/routes/items.js**.
+The `createDwollaCustomer()` and `createDwollaCustomerFundingSource()` functions represent Dwolla-specific code needed to make transfers later. If you're interested in the details, refer to their implementations in **[server/routes/items.js](https://github.com/plaid/account-funding-tutorial/blob/main/pattern-af-tutorial/server/routes/items.js#L47)**.
 
 ### Checkpoint 4: Parsing user name and email
 
@@ -308,7 +308,7 @@ if (
 
 The `getBalance()` function retrieves the real-time balance of an account by calling **/accounts/balance/get**. The logic ensures that we retrieve real-time balance only on transfers initiated after the initial transfer (recall that for the initial transfer we use the balance information from **/identity/get**), or if more than one hour has elapsed since the last transfer (i.e., the last balance check).
 
-So, when is this function used? We'll call this function when a user clicks the "Transfer Funds" button in the UI. Under the hood, this function makes a call to `getBalanceByItem()` (defined in **client/src/services/api.js**), which hits a route that we'll define in the next checkpoint.
+So, when is this function used? We'll call this function when a user clicks the "Transfer Funds" button in the UI. Under the hood, this function makes a call to `getBalanceByItem()` (defined in **[client/src/services/api.js](https://github.com/plaid/account-funding-tutorial/blob/main/pattern-af-tutorial/client/src/services/api.tsx#L81)**), which hits a route that we'll define in the next checkpoint.
 
 It's important to note that **/accounts/balance/get** is the only Plaid endpoint that returns real-time balance information. Although there are other Plaid endpoints that return balance information (i.e., **/identity/get**), you should avoid using the balance information they return if it's been less than 24 hours since the most recent call to that endpoint. This is because this balance data is typically updated about once a day, and cached data is often returned. For the most up-to-date balance information, always use **/accounts/balance/get**.
 
@@ -451,9 +451,9 @@ try {
 }
 ```
 
-`sendRequestToProcessor()` calls Dwolla's **/transfers/** endpoint to make the transfer. Under the hood, this function makes a call to `makeTransfer()` (defined in **client/src/services/api.js**), which hits the route for creating transfers with Dwolla (defined in **server/routes/items.js**).
+`sendRequestToProcessor()` calls Dwolla's **/transfers/** endpoint to make the transfer. Under the hood, this function makes a call to `makeTransfer()` (defined in **[client/src/services/api.js](https://github.com/plaid/account-funding-tutorial/blob/main/pattern-af-tutorial/client/src/services/api.tsx#L74)**), which hits the route for creating transfers with Dwolla (defined in **[server/routes/items.js](https://github.com/plaid/account-funding-tutorial/blob/main/pattern-af-tutorial/server/routes/items.js#L223)**).
 
-The request payload includes `funding_source_url`, which is specific to this particular customer account. `funding_source_url` was originally returned by the Dwolla API and saved in a database when the processor token was passed to Dwolla (also defined in **server/routes/items.js**).
+The request payload includes `funding_source_url`, which is specific to this particular customer account. `funding_source_url` was originally returned by the Dwolla API and saved in a database when the processor token was passed to Dwolla (also defined in **[server/routes/items.js](https://github.com/plaid/account-funding-tutorial/blob/main/pattern-af-tutorial/server/routes/items.js#L76)**).
 
 ### Let's try it all out!
 
@@ -463,7 +463,7 @@ After completing the transfer, navigate to the [Customers section of your Dwolla
 
 ### Next steps
 
-So, what'd you think? We'd love your feedback on the tutorial. We'll use it to improve this tutorial and future Plaid tutorials. To leave feedback, visit [Your feedback on this tutorial](https://github.com/plaid/account-funding-tutorial/issues/7). Thanks in advance!
+So, what'd you think? We'd love your feedback on the tutorial. We'll use it to improve this tutorial and future Plaid tutorials. To leave feedback, visit [Feedback: Account Funding Tutorial](https://github.com/plaid/account-funding-tutorial/issues/7). Thanks in advance!
 
 For more resources on account funding, see the following:
 

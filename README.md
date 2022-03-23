@@ -93,7 +93,7 @@ Be sure to save your changes!
 
 #### Running the app
 
-To start the app, run `make start` in the **pattern-af-tutorial/** directory. The app will run on localhost:3002. The app will continue to run as you progress through the tutorial.
+To start the app, run `make debug` in the **pattern-af-tutorial/** directory. This command will prevent you from having to stop/start the app as you add code snippets. The app will run on localhost:3002 and will continue to run as you progress through the tutorial.
 
 Some code snippets contain `console.log()` statements that print out information related to the code in the snippet. They also print out success messages intended to help guide you as you progress through the checkpoints. For front end code, check the console in your browser to view the output of the `console.log()` statement. For back end code, run `make logs` in your terminal to view the output of the statement.
 

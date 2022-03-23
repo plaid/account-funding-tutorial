@@ -175,7 +175,9 @@ That just about covers the Link implementation in the Pattern app! Let's move on
 
 ### Checkpoint 2: Retrieve identity and initial balance information associated with the account
 
-In **server/routes/items.js**, we'll add functionality to retrieve identity and balance information associated with an account. On line 172, add the following:
+To verify identity later, we'll need the identity information associated with the linked bank account. We'll also need to establish an initial balance for the account so that we can use it later when a user initiates a transfer in the app.
+
+Navigate to **server/routes/items.js**. On line 172, add the following:
 
 ```js
 if (isIdentity) {
@@ -201,9 +203,11 @@ The `isProcessor` boolean in the nested `if` statement represents whether a proc
 
 Note that we didn't call **/accounts/balance/get** to retrieve initial balance information. This is because there are several Plaid products other than Balance (like Identity) that return balance information suitable for establishing an initial balance.  However, this data is typically updated about once a day and cached data is often returned, making it insufficient for real-time balance checks. In addition, **/accounts/balance/get** is billed on a per-request basis, so it's best (i.e., cost effective) to call it only when absolutely necessary. For subsequent balance checks in the app, we'll call **/accounts/balance/get** to retrieve the real-time balance. We'll provide more detail in a different checkpoint of the tutorial.
 
+To try this code out, link a bank account in the app – you should see success messages in your console related to the code above. The app now retrieves identity and balance information for an account!
+
 ### Checkpoint 3: Generating a partner processor token
 
-Next, we'll generate a partner processor token. This token will allow us to use Dwolla's API to transfer funds. On ~line 202 (after `let fundingSourceUrl = null;`), add the following:
+Next, we'll generate a partner processor token. This token will allow us to use Dwolla's API to transfer funds. On ~line 200 (after `let fundingSourceUrl = null;`), add the following:
 
 ```js
 if (!isProcessor) {
@@ -236,6 +240,8 @@ We're using a processor to transfer funds, so the code in the `else` block will 
 Note that this bit of code won't function properly if you didn't enable the Dwolla integration in the Plaid dashboard [as described earlier in the tutorial setup](#enable-dwolla).
 
 The `createDwollaCustomer()` and `createDwollaCustomerFundingSource()` functions represent Dwolla-specific code needed to make transfers later. If you're interested in the details, refer to their implementations in **[server/routes/items.js](https://github.com/plaid/account-funding-tutorial/blob/main/pattern-af-tutorial/server/routes/items.js#L47)**.
+
+Check your console for success messages related to this code. If implemented correctly, you'll see the processor token, Customer URL, and Customer funding source URL all printed to the console. If you're running into errors, ensure you've set the `IS_PROCESSOR` variable to `true` in your **.env** file.
 
 ### Checkpoint 4: Parsing user name and email
 
@@ -275,6 +281,8 @@ The `checkUserEmail()` function checks that the user's email (from the user page
 
 In addition, note that we'll later verify identity by checking a user's full legal name and email address against the data returned by **/identity/get**. In practice, you'll find that there are many ways of verifying identity, but for the purposes of this tutorial, we'll use these two pieces of user information.
 
+Try linking an account in the app. If successful, you should see the user's full name and email printed to your console.
+
 ### Checkpoint 5: Checking current account balance
 
 Next, let's add code that will check the real-time balance of an account. Inside of the `getBalance()` function on line 61, add the following: 
@@ -311,6 +319,8 @@ The `getBalance()` function retrieves the real-time balance of an account by cal
 So, when is this function used? We'll call this function when a user clicks the "Transfer Funds" button in the UI. Under the hood, this function makes a call to `getBalanceByItem()` (defined in **[client/src/services/api.js](https://github.com/plaid/account-funding-tutorial/blob/main/pattern-af-tutorial/client/src/services/api.tsx#L81)**), which hits a route that we'll define in the next checkpoint.
 
 It's important to note that **/accounts/balance/get** is the only Plaid endpoint that returns real-time balance information. Although there are other Plaid endpoints that return balance information (i.e., **/identity/get**), you should avoid using the balance information they return if it's been less than 24 hours since the most recent call to that endpoint. This is because this balance data is typically updated about once a day, and cached data is often returned. For the most up-to-date balance information, always use **/accounts/balance/get**.
+
+To test this code, link a bank account and then initiate a transfer. You should see the `Don't need to retrieve new balance just yet.` message in your console initially. The `Getting new balance information...` message will print once you've added in the transfer functionality, which you'll do in Checkpoints 8 and 9.
 
 ### Checkpoint 6: Retrieving real-time balance information
 
@@ -356,6 +366,8 @@ router.put(
 
 This route returns information associated with a bank account, including the real-time balance. When a user clicks the "Transfer Funds" button in the UI, the `getBalance()` function will be called, which ultimately hits this route to return the balance.
 
+This route won't be hit until you add the transfer functionality later in Checkpoints 8 and 9. If you're testing out this code, expect to see console output similar to what you observed in the previous checkpoint.
+
 ### Checkpoint 7: Verifying user identity
 
 Let's take a look at how identity is verified in the app. Navigate to **client/src/components/UserPage.tsx** and take a look at the following code (don't add it, as it's already present):
@@ -385,7 +397,7 @@ Let's recap what we've added so far:
 * In the back end:
   * We added functionality that retrieves identity and initial balance information associated with an account
   * We added functionality that generates a processor token so that we can use the Dwolla API for money movement
-  * We added functionality that gets real-time balance information 
+  * We added functionality that retrieves real-time balance information
 * In the front end:
   * We added two functions that parse and return a user's legal name and email address (to help verify identity)
   * We added a function that retrieves the current balance of an account (to prevent transfers that exceed the balance of the origination account)
@@ -427,6 +439,8 @@ if (amount <= balance && amount > 0) {
 ```
 
 The `checkAmountAndInitiate()` function will attempt to transfer funds if the amount specified doesn't exceed the balance in the account and if the transfer amount is more than $0.00. Because we're using Dwolla, the funds will be transferred according to the logic in the `sendRequestToProcessor()` function (i.e., `IS_PROCESSOR` is true). Finally, the app is updated to reflect the newly available funds, and the number of successful transfers for this account is incremented by 1 (ensuring that **/accounts/balance/get** is called on subsequent transfers to return real-time balance information).
+
+Try this code out by linking an account and initiating a transfer in the app. You should see a success message in your console for this checkpoint, along with the transfer amount being sent to the processor. `sendRequestToProcessor()` doesn't exist (yet), so you'll also see `Checkpoint #9: can't transfer to Dwolla yet` in the console.
 
 In the next (and final!) checkpoint, we'll add the `sendRequestToProcessor()` function used in `checkAmountAndInitiate()`.
 

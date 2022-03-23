@@ -177,7 +177,7 @@ That just about covers the Link implementation in the Pattern app! Let's move on
 
 To verify identity later, we'll need the identity information associated with the linked bank account. We'll also need to establish an initial balance for the account so that we can use it later when a user initiates a transfer in the app.
 
-Navigate to **server/routes/items.js**. On line 172, add the following:
+Navigate to **server/routes/items.js**. Replace line 172 with the following:
 
 ```js
 if (isIdentity) {
@@ -207,7 +207,7 @@ To try this code out, link a bank account in the app – you should see success
 
 ### Checkpoint 3: Generating a partner processor token
 
-Next, we'll generate a partner processor token. This token will allow us to use Dwolla's API to transfer funds. On ~line 200 (after `let fundingSourceUrl = null;`), add the following:
+Next, we'll generate a partner processor token. This token will allow us to use Dwolla's API to transfer funds. Replace line 201 (after `let fundingSourceUrl = null;`) with the following:
 
 ```js
 if (!isProcessor) {
@@ -249,7 +249,7 @@ Let's briefly move to the front end and add functionality that will help verify 
 
 When a user successfully creates an account in the app, they're redirected to their user page. This page is defined in **client/src/components/UserPage.tsx**. The page contains the user's name and email that was input when the account was created. We'll parse this information, save it, and later use it to verify the user's identity.
 
-Inside of the `checkFullName()` function on line 72, add the following:
+Inside of the `checkFullName()` function, replace lines 75-77 with the following:
 
 ```js
 if (fullname != null) {
@@ -267,7 +267,7 @@ if (fullname != null) {
 return false;
 ```
 
-Inside of the `checkEmail()` function on line 83, add the following:
+Inside of the `checkEmail()` function, replace lines 93-95 with the following:
 
 ```js
 console.log(`Checking email:`, user_email)
@@ -285,7 +285,7 @@ Try linking an account in the app. If successful, you should see the user's full
 
 ### Checkpoint 5: Checking current account balance
 
-Next, let's add code that will check the real-time balance of an account. Inside of the `getBalance()` function on line 61, add the following: 
+Next, let's add code that will check the real-time balance of an account. Inside of the `getBalance()` function, replace lines 62-63 with the following:
 
 ```js
 let timeSinceCreation = 0; // time in milliseconds
@@ -326,7 +326,7 @@ To test this code, link a bank account and then initiate a transfer. You should 
 
 The `getBalance()` function in the previous checkpoint is called in the front end, and hits a route in the back end that makes a call to **/accounts/balance/get**. This route is yet to be defined, so let's return to the back end and add it in.
 
-Navigate to **server/routes/items.js** and add the following on line 328:
+Navigate to **server/routes/items.js** and replace line 364 with the following:
 
 ```js
 /**
@@ -406,7 +406,7 @@ With this functionality in place, we're ready to add the functionality to transf
 
 ### Checkpoint 8: Initiating a transfer
 
-You've made it! Let's add the code that will initiate a transfer. Navigate to **client/src/components/Transfers.tsx**. On line 74, add the following in the `checkAmountAndInitiate()` function:
+You've made it! Let's add the code that will initiate a transfer. Navigate to **client/src/components/Transfers.tsx**. In the `checkAmountAndInitiate()` function, replace lines 74-75 with the following:
 
 ```js
 setIsAmountOkay(balance != null && amount <= balance && amount > 0);
@@ -446,7 +446,7 @@ In the next (and final!) checkpoint, we'll add the `sendRequestToProcessor()` fu
 
 ### Checkpoint 9: Sending the transfer request to Dwolla
 
-Let's add the functionality that sends the transfer request to Dwolla. On line 59, in the `sendRequestToProcessor()` function, add:
+Let's add the functionality that sends the transfer request to Dwolla. Replace lines 59-60 in the `sendRequestToProcessor()` function with the following:
 
 ```js
 try {

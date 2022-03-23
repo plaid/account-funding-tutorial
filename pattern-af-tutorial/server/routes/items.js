@@ -177,7 +177,7 @@ router.post(
       console.log('email:', emails[0]);
       console.log('balances:', balances);
     }else{
-      console.log("no identity check yet")
+      console.log("Checkpoint #2: no identity check yet")
     }
     // processorToken is only set if IS_PROCESSOR is true in .env file
     let processorToken = null;
@@ -192,7 +192,7 @@ router.post(
       console.log('Dwolla customer url:', customerUrl);
       console.log('Dwolla customer funding source  url:', fundingSourceUrl);
     }else{
-      console.log("no processor token yet")
+      console.log("Checkpoint #3: no processor token yet")
     }
 
     // if not isProcessor, processorToken, customerUrl and fundingSouceUrl will all be null

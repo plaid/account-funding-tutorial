@@ -72,7 +72,7 @@ const UserPage = ({ match }: RouteComponentProps<RouteInfo>) => {
   const checkFullName = useCallback(
     // ownerNames is the ownernames array returned from identity/get
     (ownerNames: string[], fullname: string | null) => {
-      // ADD CODE FOR CHECKPOINT 4a ON THIS LINE AND DELETE BOTH THE CONSOLE LOG AND THE RETURN FALSE LINES BELOW
+      // ADD CODE FOR CHECKPOINT 4 (check full name) ON THIS LINE AND DELETE BOTH THE CONSOLE LOG AND THE RETURN FALSE LINES BELOW
       console.log('Checkpoint #4: no name check yet'); // DELETE THIS LINE
       return false; // DELETE THIS LINE
     },
@@ -80,7 +80,7 @@ const UserPage = ({ match }: RouteComponentProps<RouteInfo>) => {
   );
 
   const checkUserEmail = useCallback((emails: string[], user_email: string) => {
-    // ADD CODE FOR CHECKPOINT 4b ON THIS LINE AND DELETE BOTH THE CONSOLE LOG AND THE RETURN FALSE LINES BELOW
+    // ADD CODE FOR CHECKPOINT 4 (check user email) ON THIS LINE AND DELETE BOTH THE CONSOLE LOG AND THE RETURN FALSE LINES BELOW
     console.log('Checkpoint #4: no email check yet'); // DELETE THIS LINE
     return false; // DELETE THIS LINE
   }, []);

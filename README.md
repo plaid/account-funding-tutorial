@@ -108,7 +108,6 @@ Great! Now that we've set up everything, let's start building. Here's an outline
   - Retrieve identity information to aid identity verification later
   - Retrieve initial account balance from **/identity/get**
   - Generate a processor token for Dwolla
-  - Create a Dwolla customer, send Dwolla the processor token, and use the Dwolla API to move funds
   - Retrieve real-time account balance using **/accounts/balance/get** (for use later when making transfer requests)
 - Finally, on the front end, we'll:
   - Write helper functions to help verify user identity and check account balance when a user initiates a transfer
@@ -199,7 +198,7 @@ if (isIdentity) {
 
 The `isIdentity` boolean in the code above represents whether the "Verify Identity Mode" checkbox was checked during account creation in the app. For the purposes of this tutorial, we'll assume it was checked, which sets `isIdentity` to true and executes the **/identity/get** call in the `if` block. From the response, we extract the owner names and emails associated with the account and store this information to verify user identity later.
 
-The **isProcessor** boolean in the nested `if` statement represents whether a processor is being used to transfer funds. We're using Dwolla to transfer funds, so the code in the nested `if` block will execute. The **isProcessor** boolean determines whether or not we make an **auth/get** call. Since both **auth/get** and **identity/get** return an initial balance, we can use either one to retrieve the initial balance. If an **auth/get** call is made, we will use it to retrieve initial balance data. However, since in this block **auth/get** is not called, we retrieve the initial account balance from the **/identity/get** response.
+The `isProcessor` boolean in the nested `if` statement represents whether a processor is being used to transfer funds. We're using Dwolla to transfer funds, so the code in the nested `if` block will execute. In this block, we retrieve the initial account balance from the **/identity/get** response.
 
 Note that we didn't call **/accounts/balance/get** to retrieve initial balance information. This is because there are several Plaid products other than Balance (like Identity and Auth) that return balance information suitable for establishing an initial balance. However, this data is typically updated about once a day and cached data is often returned, making it insufficient for real-time balance checks. In addition, **/accounts/balance/get** is billed on a per-request basis, so it's best (i.e., cost effective) to call it only when absolutely necessary. For subsequent balance checks in the app, we'll call **/accounts/balance/get** to retrieve the real-time balance. We'll provide more detail in a different checkpoint of the tutorial.
 

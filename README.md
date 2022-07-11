@@ -470,7 +470,7 @@ At this point, you should have a fully functioning app with account funding. Run
 
 After completing the transfer, navigate to the [Customers section of your Dwolla sandbox account](https://dashboard-sandbox.dwolla.com/customers). This page of your account shows all of the users for whom you have created a funding source with Dwolla (i.e., users you created when using the Pattern app). In the [Transactions section of your account](https://dashboard-sandbox.dwolla.com/transactions), you'll see a list of all transactions into your account. If you are able to verify the transfers you've initiated via Pattern on these pages, then you've successfully built account funding! Congrats!
 
-#### Troublshooting
+#### Troubleshooting
 
 If you're encountering errors when trying to link an account in the Pattern app, check the following:
 

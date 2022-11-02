@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@types/jest": "^26.0.23",
-    "@types/react": "^17.0.11",
+    "@types/react": "^17.0.50",
     "@types/react-dom": "^17.0.7",
     "axios": "^0.21.1",
     "date-fns": "^1.30.1",

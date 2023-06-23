@@ -44,7 +44,7 @@ start-no-webhooks: $(envfile) $(clear_db_after_schema_change)
 
 ## Start the services in debug mode
 debug: $(envfile) $(clear_db_after_schema_change)
-	@echo "Starting services (this may take a few minutes if there are any changes)"
+	@echo "Starting services in debug mode"
 	docker-compose -f docker-compose.yml -f docker-compose.debug.yml up --build --detach
 	./wait-for-client.sh
 

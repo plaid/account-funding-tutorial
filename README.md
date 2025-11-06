@@ -1,3 +1,6 @@
+> [!WARNING]
+> While the [Plaid Pattern account funding app](https://github.com/plaid/pattern-account-funding) itself is still maintained, this tutorial is not maintained and describes deprecated patterns (especially in Checkpoints 5 and 6) that are no longer used in the app. 
+
 ## Building account funding in the Plaid Pattern sample app
 
 ### Table of Contents
